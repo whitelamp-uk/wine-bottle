@@ -100,7 +100,7 @@ if [ -f "./$bottle.tricks.info" ]
 then
     cat "./$bottle.tricks.info"
 fi
-echo -n "Use wintricks? [y/N] "
+echo -n "Use winetricks? [y/N] "
 read ok
 if [ "$ok" = "Y" ] || [ "$ok" = "y" ]
 then
