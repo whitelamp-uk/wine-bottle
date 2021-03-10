@@ -1,12 +1,12 @@
-# bash /home/chris/Wine/wine-bottle.bash exe "Paint_Shop_Pro_9/drive_c/Program Files/Jasc Software Inc/Paint Shop Pro 9/Paint Shop Pro 9.exe"
+
 
 if [ "$1" = "exe" ]
 then
+    # cd to the program directory
     cd "$(dirname "$(realpath "$2")")"
-    echo -n "In directory "
-    pwd
-    wine "$2"
-    exit
+    # Run the program
+    wine "$(realpath "$2")"
+    exit $?
 fi
 
 
@@ -16,8 +16,6 @@ then
     exit
 fi
 
-# Where to put the bottles
-bottleBank="$HOME/Wine"
 # Set a bottle name
 bottle="$1"
 # Set the location of the installer
@@ -72,15 +70,17 @@ sudo apt install winetricks
 # The following is based on this tutorial:
 # https://www.youtube.com/watch?v=RmOdA5GeSqs
 
-# Create a location for wine bottles
-mkdir -p "$bottleBank"
-
-# Change into that directory
-cd "$bottleBank"
+# Change into this directory
+cd "$(dirname "$(realpath "$0")")"
+bottleBank="$(pwd)"
 
 # Create/edit bottle config (usually you want 32-bit)
 echo "Bottle = $bottleBank/$bottle"
-echo -n "Configuration: at least make sure you have the right Windows version. Continue? [y/N] "
+if [ -f "./$bottle.cfg.info" ]
+then
+    cat "./$bottle.cfg.info"
+fi
+echo -n "Configure? [y/N] "
 read ok
 if [ "$ok" = "Y" ] || [ "$ok" = "y" ]
 then
@@ -93,9 +93,14 @@ then
     ls -l "$bottleBank/$bottle/drive_c/windows/Fonts"
 fi
 
-# Use winetricks to install some fonts
-echo "Extra winetricks: use \"Select the default wineprefix\""
-echo -n "As a minimum you should install \"corefonts\" - continue [y/N] "
+# Use winetricks
+echo "For winetricks: use \"Select the default wineprefix\""
+echo "When finished, use \"Cancel\" to escape"
+if [ -f "./$bottle.tricks.info" ]
+then
+    cat "./$bottle.tricks.info"
+fi
+echo -n "Use wintricks? [y/N] "
 read ok
 if [ "$ok" = "Y" ] || [ "$ok" = "y" ]
 then
@@ -103,7 +108,12 @@ then
 fi
 
 # Do install
-echo -n "Attempt to install $installer into $bottleBank/$bottle? [y/N] "
+echo "Attempt to install $installer into $bottleBank/$bottle"
+if [ -f "./$bottle.install.info" ]
+then
+    cat "./$bottle.install.info"
+fi
+echo -n "Run installer? [y/N] "
 read ok
 if [ "$ok" = "Y" ] || [ "$ok" = "y" ]
 then
