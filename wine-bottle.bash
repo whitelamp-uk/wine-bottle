@@ -94,17 +94,18 @@ then
 fi
 
 # Use winetricks
-echo "For winetricks: use \"Select the default wineprefix\""
-echo "When finished, use \"Cancel\" to escape"
-if [ -f "./$bottle.tricks.info" ]
+echo "Deploying winetricks"
+if [ -f "./$bottle.tricks.list" ]
 then
-    cat "./$bottle.tricks.info"
-fi
-echo -n "Use winetricks? [y/N] "
-read ok
-if [ "$ok" = "Y" ] || [ "$ok" = "y" ]
-then
-    WINEARCH=$arch WINEPREFIX="$bottleBank/$bottle" winetricks
+    for trick in $(cat "./$bottle.tricks.list")
+    do
+        echo -n "    winetricks $trick? [y/N] "
+        read ok
+        if [ "$ok" = "Y" ] || [ "$ok" = "y" ]
+        then
+            WINEARCH=$arch WINEPREFIX="$bottleBank/$bottle" winetricks $trick 
+        fi
+    done
 fi
 
 # Do install
